@@ -5,6 +5,7 @@ library(tidyverse)
 library(lubridate)
 library(stringr)
 library(viridis)
+library(shiny)
 library(ggthemr)
 library(ggrepel)
 library(rdrop2)
@@ -26,8 +27,8 @@ slopes <- read_csv(paste(root_path, "/data/measurements/slopes.csv", sep=""))
 dd <- read_csv(paste(root_path, "/data/measurements/all_data.csv", sep=""))
 
 # set the levels according to your treatments and desired order
-slopes <- mutate(slopes, treatment=factor(treatment, levels=paste(c(8,12,24,30), "ppt", sep="")))
-dd     <- mutate(dd,     treatment=factor(treatment, levels=paste(c(8,12,24,30), "ppt", sep="")))
+slopes <- mutate(slopes, treatment=factor(levels=paste(c(8,12,16,20,24,28), "ppt", sep="")))
+dd     <- mutate(dd,     treatment=factor(levels=paste(c(8,12,16,20,24,28), "ppt", sep="")))
 
 # to make sure these variables are in the appropriate format
 dd <- mutate(dd, replicate=factor(replicate))
@@ -378,7 +379,7 @@ server <- function(input, output) {
     ms <- ggplot(slopes_sum, aes(x=treatment, y=mean_slope, color=treatment)) +
       geom_hline(aes(yintercept=0), color="red", linetype=2) +
       geom_point(alpha=.8, size=2, stroke=1.5) +
-      geom_errorbar(data=slopes_sum, aes(x=treatment, y=mean_slope, ymin=mean_slope-sd_slope, ymax=mean_slope+sd_slope, color=as.character(treatment)), width=.1) +
+      geom_errorbar(data=slopes_sum, aes(x=treatment, y=mean_slope, ymin=mean_slope-sd_slope, ymax=mean_slope+sd_slope, color=treatment), width=.1) +
       # scale_fill_viridis(end = 0.9, discrete = TRUE, option= "B") +
       scale_color_viridis(end = 0.9, discrete = TRUE, option= "B") +
       labs(y="Slope of log(RFU) by day", x="Treatment")
